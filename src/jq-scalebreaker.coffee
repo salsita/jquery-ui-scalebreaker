@@ -1,6 +1,11 @@
 (($) ->
   $.widget "salsita.scalebreaker",
 
+    # TODO:
+    # Refresh method, onresize it breaks (default bind to refresh)
+    # Clean up real world cases
+    # fix the scrollbar counted in innerWidth
+
     options:
       cssAnimated: true
       dialogContent: ''
