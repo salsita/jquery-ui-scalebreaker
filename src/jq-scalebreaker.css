@@ -12,6 +12,7 @@
   position: absolute;
   z-index: 1;
   width: 100%;
+  cursor: auto;
 }
 
 #jq-scalebreaker-dialog-content {
