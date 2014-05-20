@@ -1,7 +1,7 @@
 jquery-ui-scalebreaker
 ============================
 
-- An ultra-lightweight modal dialog that repositions itself on the screen to initial viewport and scales back to device-width viewport size while user is native browser zooming into the page. It stays the same size and in the same position as if the zoom never happened. Features a click-to-close backdrop. Needs more work.
+- An ultra-lightweight modal dialog that repositions itself on the screen to current viewport and scales back to device width element size while user is browser zooming into the page. It stays the same size and in the same position as if the zoom never happened. Features a click-to-close backdrop. Needs more work.
 - Uses native CSS3 keyframe animations for it's hide/show routine.
 - Built upon the jQuery UI widget factory.
 - ???
