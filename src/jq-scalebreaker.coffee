@@ -7,10 +7,9 @@
       dialogContent: ''
       idNamespace: 'jq-scalebreaker'
       dialogPosition: 'bottom'
-      scaleOrigin: '0 100%'
       closeOnBackdrop: true
       denyUserScroll: true
-      debug: true
+      debug: false
 
     _create: ->
       @rawElement =
@@ -43,7 +42,6 @@
       if @options.debug
         console.debug "#{@options.idNamespace}: #{name}", args
 
-
     _getScaleFactor: ->
       @scaleFactor = window.innerWidth/document.documentElement.clientWidth
       @_logMessage 'scale factor found', @scaleFactor
@@ -54,11 +52,13 @@
       # Safer to always work with left anchor values due to scrollbars possibly being counted from the right.
       @initialViewport = [window.innerWidth, window.innerHeight]
       @_logMessage 'initial viewport', @initialViewport
+      return @initialViewport
 
     _getCurrentViewportOffset: ->
-      # This may be too iPhony only, needs testing across browsers and devices.
+      # This may be too iPhony (though nice), needs testing across browsers and devices.
       @currentViewportOffset = [window.pageXOffset, window.pageYOffset]
       @_logMessage 'current viewport offset', @currentViewportOffset
+      return @currentViewportOffset
 
     addContentToDialog: (content) ->
       @dialog.html content
@@ -66,15 +66,26 @@
 
     rescaleAndReposition: (el) ->
       _self = this
-      # Get fresh data.
-      scale = @_getScaleFactor()
-      @_getCurrentViewportOffset()
-
-      # Apply initial page scaling to the dialog.
+      # Cache and freeze the viewport values.
+      oldViewport = @initialViewport
+      newViewport = @_getCurrentViewportOffset()
+      # Reposition the dialog to the current viewport.
+      if @options.dialogPosition is 'top'
+        el.css
+          'top': newViewport[1]
+          'left': 0
+          'transform-origin': '0 0'
+          '-webkit-transform-origin': '0 0'
+      if @options.dialogPosition is 'bottom'
+        el.css
+          'bottom': oldViewport[1] - (newViewport[1] + window.innerHeight)
+          'left': 0
+          'transform-origin': '0 100%'
+          '-webkit-transform-origin': '0 100%'
+      # Apply scale.
       el.css
-        'transform': "scale(#{scale})"
-        '-webkit-transform': "scale(#{scale})"
-
+        'transform': "scale(#{_self._getScaleFactor()})"
+        '-webkit-transform': "scale(#{_self._getScaleFactor()})"
 
     show: ->
       _self = this
@@ -111,32 +122,26 @@
         @backdrop.one 'animationend webkitAnimationEnd',(e) ->
           _self.backdrop.removeClass "#{_self.options.idNamespace}-animate-out"
           _self.backdrop.removeClass "#{_self.options.idNamespace}-show"
+          # Remove inline CSS from the scaling.
           if _self.options.scaleDialog
             _self.dialog.removeAttr 'style'
       # Or just close.
       else if @options.closeOnBackdrop
         _self.backdrop.off "click.#{@options.idNamespace}"
         @backdrop.removeClass "#{@options.idNamespace}-show"
+        # Remove inline CSS from the scaling.
         if @options.scaleDialog
           @dialog.removeAttr 'style'
-      # Remove inline CSS from the scaling.
-
       @_logMessage 'hiding widget'
 
     destroy: ->
-      $(window).off "resize.#{@options.dataAttribute} scroll.#{@options.dataAttribute}"
-      @element.off()
-      clearInterval @autoUpdateTimer
-      @element.css
-        'clip': 'auto auto auto auto'
-      @allClones.remove()
-      @allBlocks = null
-      @allClones = null
-      @overlayOffset = null
-      @collisionTarget = null
-      @collisionTargetOffset = null
-      @collidingBlocks = null
-      @collidingBlocksOld = null
+      @backdrop.remove()
+      @rawElement = null
+      @backdrop = null
+      @dialog = null
+      @scaleFactor = null
+      @initialViewport = null
+      @currentViewportOffset = null
       @_destroy()
 
     _destroy: $.noop

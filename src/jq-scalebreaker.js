@@ -9,10 +9,9 @@
         dialogContent: '',
         idNamespace: 'jq-scalebreaker',
         dialogPosition: 'bottom',
-        scaleOrigin: '0 100%',
         closeOnBackdrop: true,
         denyUserScroll: true,
-        debug: true
+        debug: false
       },
       _create: function() {
         this.rawElement = "<div id='" + this.options.idNamespace + "'><div id='" + this.options.idNamespace + "-dialog'></div></div>";
@@ -48,24 +47,42 @@
       },
       _getInitialViewport: function() {
         this.initialViewport = [window.innerWidth, window.innerHeight];
-        return this._logMessage('initial viewport', this.initialViewport);
+        this._logMessage('initial viewport', this.initialViewport);
+        return this.initialViewport;
       },
       _getCurrentViewportOffset: function() {
         this.currentViewportOffset = [window.pageXOffset, window.pageYOffset];
-        return this._logMessage('current viewport offset', this.currentViewportOffset);
+        this._logMessage('current viewport offset', this.currentViewportOffset);
+        return this.currentViewportOffset;
       },
       addContentToDialog: function(content) {
         this.dialog.html(content);
         return this._logMessage('adding content to dialog', content);
       },
       rescaleAndReposition: function(el) {
-        var scale, _self;
+        var newViewport, oldViewport, _self;
         _self = this;
-        scale = this._getScaleFactor();
-        this._getCurrentViewportOffset();
+        oldViewport = this.initialViewport;
+        newViewport = this._getCurrentViewportOffset();
+        if (this.options.dialogPosition === 'top') {
+          el.css({
+            'top': newViewport[1],
+            'left': 0,
+            'transform-origin': '0 0',
+            '-webkit-transform-origin': '0 0'
+          });
+        }
+        if (this.options.dialogPosition === 'bottom') {
+          el.css({
+            'bottom': oldViewport[1] - (newViewport[1] + window.innerHeight),
+            'left': 0,
+            'transform-origin': '0 100%',
+            '-webkit-transform-origin': '0 100%'
+          });
+        }
         return el.css({
-          'transform': "scale(" + scale + ")",
-          '-webkit-transform': "scale(" + scale + ")"
+          'transform': "scale(" + (_self._getScaleFactor()) + ")",
+          '-webkit-transform': "scale(" + (_self._getScaleFactor()) + ")"
         });
       },
       show: function() {
@@ -121,20 +138,13 @@
         return this._logMessage('hiding widget');
       },
       destroy: function() {
-        $(window).off("resize." + this.options.dataAttribute + " scroll." + this.options.dataAttribute);
-        this.element.off();
-        clearInterval(this.autoUpdateTimer);
-        this.element.css({
-          'clip': 'auto auto auto auto'
-        });
-        this.allClones.remove();
-        this.allBlocks = null;
-        this.allClones = null;
-        this.overlayOffset = null;
-        this.collisionTarget = null;
-        this.collisionTargetOffset = null;
-        this.collidingBlocks = null;
-        this.collidingBlocksOld = null;
+        this.backdrop.remove();
+        this.rawElement = null;
+        this.backdrop = null;
+        this.dialog = null;
+        this.scaleFactor = null;
+        this.initialViewport = null;
+        this.currentViewportOffset = null;
         return this._destroy();
       },
       _destroy: $.noop
