@@ -6,4 +6,4 @@ jquery-ui-scalebreaker
 - Built upon the jQuery UI widget factory.
 - ???
 
-A [demo](http://mystrd.at/testing/jq-scalebreaker/demo/) currently lives here.
+A demo currently lives [demo](http://mystrd.at/testing/jq-scalebreaker/demo/).
