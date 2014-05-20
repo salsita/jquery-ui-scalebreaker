@@ -2,9 +2,9 @@
   $.widget "salsita.scalebreaker",
 
     options:
-      scaleDialog: true
       cssAnimated: true
       dialogContent: ''
+      # Namespace only affects the HTML currently, not CSS rules.
       idNamespace: 'jq-scalebreaker'
       dialogPosition: 'bottom'
       closeOnBackdrop: true
@@ -13,11 +13,16 @@
 
     _create: ->
       @rawElement =
-        "<div id='#{@options.idNamespace}'><div id='#{@options.idNamespace}-dialog'></div></div>"
+        "<div id='#{@options.idNamespace}'>
+           <div id='#{@options.idNamespace}-dialog'>
+             <div id='#{@options.idNamespace}-dialog-content'></div>
+           </div>
+         </div>"
       @backdrop = null
       @dialog = null
+      @dialogContent = null
       @scaleFactor = null
-      @initialViewport = []
+      @fullPageHeight = null
       @currentViewportOffset = []
       @_initWidget()
 
@@ -26,17 +31,15 @@
       $('body').append @rawElement
       # Cache DOM references.
       @backdrop = $('#' + @options.idNamespace)
-      @dialog = @backdrop.find('#' + @options.idNamespace + '-dialog')
+      @dialog = $('#' + @options.idNamespace + '-dialog')
+      @dialogContent = $('#' + @options.idNamespace + '-dialog-content')
       @_logMessage 'wrapper reference created', @backdrop
-      # Get common data.
-      @_getInitialViewport()
-      @_getScaleFactor()
-      # Append HTML content.
+      # Sets height of the backdrop, important step prone to potential issues.
+      # Position fixed cannot be used due to iPhone post-process moving elements relative to page edge during user scaling.
+      @_setBackdropHeight()
+      # Append initial HTML content.
+      # The widget stays in the DOM so any 3rd party manipulation of it's content is A-okay at any time.
       @addContentToDialog @options.dialogContent
-
-    _triggerEvent: (name, data) ->
-      @element.trigger name, [data]
-      @_logMessage name, data
 
     _logMessage: (name, args) ->
       if @options.debug
@@ -44,15 +47,8 @@
 
     _getScaleFactor: ->
       @scaleFactor = window.innerWidth/document.documentElement.clientWidth
-      @_logMessage 'scale factor found', @scaleFactor
+      @_logMessage 'scale factor', @scaleFactor
       return @scaleFactor
-
-    _getInitialViewport: ->
-      # Could there be cases where this is different from position fixed sizes?
-      # Safer to always work with left anchor values due to scrollbars possibly being counted from the right.
-      @initialViewport = [window.innerWidth, window.innerHeight]
-      @_logMessage 'initial viewport', @initialViewport
-      return @initialViewport
 
     _getCurrentViewportOffset: ->
       # This may be too iPhony (though nice), needs testing across browsers and devices.
@@ -60,26 +56,33 @@
       @_logMessage 'current viewport offset', @currentViewportOffset
       return @currentViewportOffset
 
+    _setBackdropHeight: ->
+      @fullPageHeight = Math.max(document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight)
+      @backdrop.css
+        'height': @fullPageHeight
+
     addContentToDialog: (content) ->
-      @dialog.html content
+      @dialogContent.html content
       @_logMessage 'adding content to dialog', content
 
     rescaleAndReposition: (el) ->
       _self = this
       # Cache and freeze the viewport values.
-      oldViewport = @initialViewport
       newViewport = @_getCurrentViewportOffset()
       # Reposition the dialog to the current viewport.
       if @options.dialogPosition is 'top'
         el.css
           'top': newViewport[1]
-          'left': 0
+          'left': newViewport[0]
           'transform-origin': '0 0'
           '-webkit-transform-origin': '0 0'
       if @options.dialogPosition is 'bottom'
         el.css
-          'bottom': oldViewport[1] - (newViewport[1] + window.innerHeight)
-          'left': 0
+          'bottom': _self.fullPageHeight - (newViewport[1] + window.innerHeight)
+          'left': newViewport[0]
           'transform-origin': '0 100%'
           '-webkit-transform-origin': '0 100%'
       # Apply scale.
@@ -94,20 +97,23 @@
         _self.backdrop.on "click.#{@options.idNamespace}", (e) ->
           if e.target is _self.backdrop.get(0)
             _self.hide()
-      # Deny user scrolling while widget is visible.
+      # Deny user touch scrolling while widget is visible.
+      # This solves a lot of proxy UX monstrosities, visual browser imperfection prolapses and code complexity issues for the moment.
       if @options.denyUserScroll
         $('body').on "touchmove.#{@options.idNamespace}", (e) ->
           e.preventDefault()
-      # Rescale the element and reposition on screen.
-      if @options.scaleDialog
-        @rescaleAndReposition @dialog
+
       # Show the widget.
       @backdrop.addClass "#{@options.idNamespace}-show"
+      # Rescale the element and reposition on screen.
+      @rescaleAndReposition @dialog
       # Add the animation class after element is displayed.
       if @options.cssAnimated
         @backdrop.addClass "#{@options.idNamespace}-animate-in"
-        @backdrop.one 'animationend webkitAnimationEnd',(e) ->
-          _self.backdrop.removeClass "#{_self.options.idNamespace}-animate-in"
+        @backdrop.on 'animationend webkitAnimationEnd',(e) ->
+          if e.target is _self.dialogContent.get(0)
+            _self.backdrop.removeClass "#{_self.options.idNamespace}-animate-in"
+            _self.backdrop.off 'animationend webkitAnimationEnd'
       @_logMessage 'showing widget'
 
     hide: ->
@@ -119,19 +125,19 @@
       if @options.closeOnBackdrop and @options.cssAnimated
         _self.backdrop.off "click.#{@options.idNamespace}"
         @backdrop.addClass "#{@options.idNamespace}-animate-out"
-        @backdrop.one 'animationend webkitAnimationEnd',(e) ->
-          _self.backdrop.removeClass "#{_self.options.idNamespace}-animate-out"
-          _self.backdrop.removeClass "#{_self.options.idNamespace}-show"
-          # Remove inline CSS from the scaling.
-          if _self.options.scaleDialog
+        @backdrop.on 'animationend webkitAnimationEnd',(e) ->
+          if e.target is _self.dialogContent.get(0)
+            _self.backdrop.removeClass "#{_self.options.idNamespace}-animate-out"
+            _self.backdrop.removeClass "#{_self.options.idNamespace}-show"
+            # Remove inline CSS from the scaling.
             _self.dialog.removeAttr 'style'
+            _self.backdrop.off 'animationend webkitAnimationEnd'
       # Or just close.
       else if @options.closeOnBackdrop
         _self.backdrop.off "click.#{@options.idNamespace}"
         @backdrop.removeClass "#{@options.idNamespace}-show"
         # Remove inline CSS from the scaling.
-        if @options.scaleDialog
-          @dialog.removeAttr 'style'
+        @dialog.removeAttr 'style'
       @_logMessage 'hiding widget'
 
     destroy: ->

@@ -1,9 +1,9 @@
 #jq-scalebreaker {
-  position: fixed;
+  position: absolute;
   top: 0;
-  right: 0;
-  bottom: 0;
   left: 0;
+  width: 100%;
+  overflow: hidden;
   z-index: 99995;
 }
 
@@ -11,6 +11,11 @@
   position: absolute;
   z-index: 1;
   width: 100%;
+}
+
+#jq-scalebreaker-dialog-content {
+  width: 100%;
+  height: 100%;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
@@ -25,40 +30,32 @@
   display: block;
 }
 
-#jq-scalebreaker.jq-scalebreaker-animate-in {
+.jq-scalebreaker-animate-in {
   -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
-  -webkit-animation-fill-mode: none;
-  animation-fill-mode: none;
 }
 
-#jq-scalebreaker.jq-scalebreaker-animate-in #jq-scalebreaker-dialog {
+.jq-scalebreaker-animate-in #jq-scalebreaker-dialog-content {
   -webkit-animation-name: bounceInUp;
   animation-name: bounceInUp;
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
-  -webkit-animation-fill-mode: none;
-  animation-fill-mode: none;
 }
 
-#jq-scalebreaker.jq-scalebreaker-animate-out {
+.jq-scalebreaker-animate-out {
   -webkit-animation-name: fadeOut;
   animation-name: fadeOut;
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
-  -webkit-animation-fill-mode: none;
-  animation-fill-mode: none;
 }
 
-#jq-scalebreaker.jq-scalebreaker-animate-out #jq-scalebreaker-dialog {
+.jq-scalebreaker-animate-out #jq-scalebreaker-dialog-content {
   -webkit-animation-name: bounceOutDown;
   animation-name: bounceOutDown;
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
-  -webkit-animation-fill-mode: none;
-  animation-fill-mode: none;
 }
 
 /* Custom Design */
@@ -67,7 +64,7 @@
   background-color: rgba(0,0,0,0.7);
 }
 
-#jq-scalebreaker-dialog {
+#jq-scalebreaker-dialog-content {
   padding: 20px;
   background-color: #fff;
   min-height: 100px;
