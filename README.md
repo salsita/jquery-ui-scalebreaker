@@ -5,3 +5,5 @@ jquery-ui-scalebreaker
 - Uses native CSS3 keyframe animations for it's hide/show routine.
 - Built upon the jQuery UI widget factory.
 - ???
+
+A [demo](http://mystrd.at/testing/jq-scalebreaker/demo/) currently lives here.
