@@ -4,6 +4,7 @@
   left: 0;
   width: 100%;
   overflow: hidden;
+  cursor: pointer;
   z-index: 99995;
 }
 
