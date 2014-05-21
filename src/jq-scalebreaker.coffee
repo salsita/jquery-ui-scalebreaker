@@ -5,6 +5,8 @@
     # Refresh method, onresize it breaks (default bind to refresh)
     # Clean up real world cases
     # fix the scrollbar counted in innerWidth
+    # deny double tap in iOS
+    # add scale to center
 
     options:
       cssAnimated: true
