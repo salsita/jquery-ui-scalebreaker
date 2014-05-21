@@ -1,4 +1,4 @@
-#jq-scalebreaker {
+#jq-scalebreaker-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -8,27 +8,36 @@
   z-index: 99995;
 }
 
-#jq-scalebreaker-dialog {
+#jq-scalebreaker-dialog-scalable {
   position: absolute;
   z-index: 1;
   width: 100%;
   cursor: auto;
 }
 
+#jq-scalebreaker-dialog-scrollable {
+  position: relative;
+}
+
 #jq-scalebreaker-dialog-content {
-  width: 100%;
-  height: 100%;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
 
+#jq-scalebreaker-dialog-close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
+
 /* UI Logic */
 
-#jq-scalebreaker {
+#jq-scalebreaker-wrapper {
   display: none;
 }
 
-#jq-scalebreaker.jq-scalebreaker-show {
+#jq-scalebreaker-wrapper.jq-scalebreaker-show {
   display: block;
 }
 
@@ -39,7 +48,7 @@
   animation-duration: 0.5s;
 }
 
-.jq-scalebreaker-animate-in #jq-scalebreaker-dialog-content {
+.jq-scalebreaker-animate-in #jq-scalebreaker-dialog-scrollable {
   -webkit-animation-name: bounceInUp;
   animation-name: bounceInUp;
   -webkit-animation-duration: 0.5s;
@@ -53,7 +62,7 @@
   animation-duration: 0.5s;
 }
 
-.jq-scalebreaker-animate-out #jq-scalebreaker-dialog-content {
+.jq-scalebreaker-animate-out #jq-scalebreaker-dialog-scrollable {
   -webkit-animation-name: bounceOutDown;
   animation-name: bounceOutDown;
   -webkit-animation-duration: 0.5s;
@@ -62,15 +71,52 @@
 
 /* Custom Design */
 
-#jq-scalebreaker {
+#jq-scalebreaker-wrapper {
   background-color: rgba(0,0,0,0.7);
+}
+
+#jq-scalebreaker-dialog-scrollable {
+  min-height: 100px;
+  max-height: 300px;
+  overflow: hidden;
+  background-color: #fff;
 }
 
 #jq-scalebreaker-dialog-content {
   padding: 20px;
-  background-color: #fff;
-  min-height: 100px;
 }
+
+#jq-scalebreaker-dialog-close {
+  width: 32px;
+  height: 32px;
+  background-color: rgba(0,0,0,0.1);
+}
+
+#jq-scalebreaker-dialog-close:before,
+#jq-scalebreaker-dialog-close:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -10px 0 0 -1px;
+  width: 2px;
+  height: 20px;
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  background-color: #fff;
+}
+
+#jq-scalebreaker-dialog-close:before {
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+#jq-scalebreaker-dialog-close:after {
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
 
 /* Animations */
 
