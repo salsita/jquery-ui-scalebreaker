@@ -32,10 +32,9 @@
         this.scrollarea = $('#' + this.options.idNamespace + '-dialog-scrollable');
         this.content = $('#' + this.options.idNamespace + '-dialog-content');
         this.close = $('#' + this.options.idNamespace + '-dialog-close');
-        this._setInitialViewport();
         return this.changeDialogContent(this.options.dialogContent);
       },
-      _setInitialViewport: function() {
+      _setFullPageHeight: function() {
         this.fullPageHeight = Math.max(document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
         return this.wrapper.css({
           'height': this.fullPageHeight
@@ -89,7 +88,7 @@
         _self = this;
         if (this.options.closeOnBackdrop) {
           _self.wrapper.on("click." + this.options.idNamespace, function(e) {
-            if (e.target === _self.wrapper.get(0) || e.target === _self.dialog.get(0)) {
+            if (e.target === _self.wrapper.get(0)) {
               return _self.hide();
             }
           });
@@ -151,9 +150,11 @@
         return this._logMessage('adding content to dialog', content);
       },
       refresh: function() {
+        this._setFullPageHeight();
         this._getCurrentViewport();
         this._rescaleAndReposition();
-        return this._manageScrollbar();
+        this._manageScrollbar();
+        return this._logMessage('refreshing');
       },
       destroy: function() {
         $(window).off("scroll." + this.options.idNamespace);
