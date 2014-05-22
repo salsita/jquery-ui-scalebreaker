@@ -41,10 +41,18 @@
         });
       },
       _getCurrentViewport: function() {
+        var bodyOverflow;
+        bodyOverflow = $('body').css('overflow');
+        $('body').css({
+          'overflow': 'hidden'
+        });
         this.scaleFactor = window.innerWidth / document.documentElement.clientWidth;
         this._logMessage('scale factor', this.scaleFactor);
         this.currentViewportOffset = [window.pageXOffset, window.pageYOffset];
-        return this._logMessage('current viewport offset', this.currentViewportOffset);
+        this._logMessage('current viewport offset', this.currentViewportOffset);
+        return $('body').css({
+          'overflow': bodyOverflow
+        });
       },
       _rescaleAndReposition: function() {
         this.dialog.css({

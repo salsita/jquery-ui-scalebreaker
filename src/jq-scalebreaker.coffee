@@ -3,7 +3,6 @@
 
     # TODO:
     # fix non-mobile websites scaling back to a tiny dialog (correct but wrong)
-    # fix the physical scrollbar size counted in innerWidth
     # add scale to center
     # make instanceable html?
 
@@ -35,9 +34,8 @@
       @scrollarea = null
       @content = null
       @close = null
-      # Static data acquired on widget load.
-      @fullPageHeight = null
       # Dynamic data based on actual user values.
+      @fullPageHeight = null
       @scaleFactor = null
       @currentViewportOffset = null
       @_initWidget()
@@ -65,11 +63,18 @@
         'height': @fullPageHeight
 
     _getCurrentViewport: ->
+      bodyOverflow = $('body').css 'overflow'
+      # Hide the scrollbars so the calculations don't fail.
+      $('body').css
+        'overflow': 'hidden'
       @scaleFactor = window.innerWidth/document.documentElement.clientWidth
       @_logMessage 'scale factor', @scaleFactor
       # This may be too iPhony (though nice), needs testing across browsers and devices.
       @currentViewportOffset = [window.pageXOffset, window.pageYOffset]
       @_logMessage 'current viewport offset', @currentViewportOffset
+      # Revert back to the original page value.
+      $('body').css
+        'overflow': bodyOverflow
 
     _rescaleAndReposition: ->
       @dialog.css
