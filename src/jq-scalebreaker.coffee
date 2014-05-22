@@ -18,6 +18,7 @@
       dialogPosition: 'bottom'
       closeOnBackdrop: true
       denyUserScroll: true
+      refreshOnScroll: true
       debug: false
 
     _create: ->
@@ -31,17 +32,14 @@
           </div>
         </div>"
       @scrollbar = null
-
       # DOM references
       @wrapper = null
       @dialog = null
       @scrollarea = null
       @content = null
       @close = null
-
       # Static data acquired on widget load.
       @fullPageHeight = null
-
       # Dynamic data based on actual user values.
       @scaleFactor = null
       @currentViewportOffset = null
@@ -51,24 +49,18 @@
     _initWidget: ->
       # Append the basic wrapper to the DOM.
       $('body').append @rawElement
-
       # Cache DOM references.
       @wrapper = $('#' + @options.idNamespace + '-wrapper')
       @dialog = $('#' + @options.idNamespace + '-dialog-scalable')
       @scrollarea = $('#' + @options.idNamespace + '-dialog-scrollable')
       @content = $('#' + @options.idNamespace + '-dialog-content')
       @close = $('#' + @options.idNamespace + '-dialog-close')
-
       # Sets height of the backdrop, important step prone to potential issues.
       # Position fixed cannot be used due to iPhone post-process moving elements relative to page edge during user scaling.
       @_setInitialViewport()
       # Append initial HTML content.
       # The widget stays in the DOM so any 3rd party manipulation of it's content is A-okay at any time.
       @changeDialogContent @options.dialogContent
-
-
-
-
 
     _setInitialViewport: ->
       @fullPageHeight = Math.max(document.body.offsetHeight,
@@ -79,20 +71,12 @@
       @wrapper.css
         'height': @fullPageHeight
 
-
     _getCurrentViewport: ->
       @scaleFactor = window.innerWidth/document.documentElement.clientWidth
       @_logMessage 'scale factor', @scaleFactor
       # This may be too iPhony (though nice), needs testing across browsers and devices.
       @currentViewportOffset = [window.pageXOffset, window.pageYOffset]
       @_logMessage 'current viewport offset', @currentViewportOffset
-
-
-
-
-
-
-
 
     _rescaleAndReposition: ->
       @dialog.css
@@ -110,50 +94,39 @@
           'transform-origin': '0 100%'
           '-webkit-transform-origin': '0 100%'
 
-
-
-    _createScrollbar: ->
-      @scrollbar = new IScroll(@scrollarea.get(0),
-        HWCompositing: false
-      )
-
-
+    _manageScrollbar: ->
+      if @content.outerHeight() > @scrollarea.outerHeight() and !@scrollbar
+        @scrollbar = new IScroll(@scrollarea.get(0),
+          HWCompositing: true
+          useTransition: false
+          click: true
+        )
+      else if @scrollbar
+        @scrollbar.refresh()
 
     _logMessage: (name, args) ->
       if @options.debug
         console.log "#{@options.idNamespace}: #{name}", args
 
-
-
-
-
     refresh: ->
       @_getCurrentViewport()
       @_rescaleAndReposition()
-
-
-
+      @_manageScrollbar()
 
     show: ->
       _self = this
-
-
       # Close binds.
       if @options.closeOnBackdrop
         _self.wrapper.on "click.#{@options.idNamespace}", (e) ->
           if e.target is _self.wrapper.get(0) or e.target is _self.dialog.get(0)
             _self.hide()
-      @close.one "click.#{@options.idNamespace}", (e) ->
-        e.stopPropagation()
+      @close.on "click.#{@options.idNamespace}", (e) ->
         _self.hide()
-
-
       # Deny user touch scrolling while widget is visible.
       # This solves a lot of proxy UX problems, visual browser prolapses and code complexity for the moment.
       if @options.denyUserScroll
         $('body').on "touchmove.#{@options.idNamespace}", (e) ->
           e.preventDefault()
-
       # Show the widget.
       @wrapper.addClass "#{@options.idNamespace}-show"
       # Rescale the element and reposition on screen.
@@ -165,12 +138,11 @@
           if e.target is _self.scrollarea.get(0)
             _self.wrapper.removeClass "#{_self.options.idNamespace}-animate-in"
             _self.wrapper.off 'animationend webkitAnimationEnd'
+      # Refresh the dialog on an unexpected scroll event.
+      if @options.refreshOnScroll
+        $(window).on "scroll.#{@options.idNamespace}",(e) ->
+          _self.refresh()
       @_logMessage 'showing widget'
-
-      @_createScrollbar()
-
-
-
 
     hide: ->
       _self = this
@@ -186,28 +158,39 @@
             _self.wrapper.removeClass "#{_self.options.idNamespace}-animate-out"
             _self.wrapper.removeClass "#{_self.options.idNamespace}-show"
             # Remove inline CSS from the scaling.
-            _self.dialog.removeAttr 'style'
+            # _self.dialog.removeAttr 'style'
             _self.wrapper.off 'animationend webkitAnimationEnd'
       # Or just close.
       else if @options.closeOnBackdrop
         _self.wrapper.off "click.#{@options.idNamespace}"
         @wrapper.removeClass "#{@options.idNamespace}-show"
         # Remove inline CSS from the scaling.
-        @dialog.removeAttr 'style'
+        # @dialog.removeAttr 'style'
+      # Remove the scroll event bind.
+      if @options.refreshOnScroll
+        $(window).off "scroll.#{@options.idNamespace}"
       @_logMessage 'hiding widget'
 
     changeDialogContent: (content) ->
       @content.html content
+      @refresh()
       @_logMessage 'adding content to dialog', content
 
     destroy: ->
+      $(window).off "scroll.#{@options.idNamespace}"
       @wrapper.remove()
       @rawElement = null
       @wrapper = null
       @dialog = null
+      @scrollarea = null
+      @content = null
+      @close = null
       @scaleFactor = null
-      @initialViewport = null
+      @fullPageHeight = null
       @currentViewportOffset = null
+      if @scrollbar
+        @scrollbar.destroy()
+      @scrollbar = null
       @_destroy()
 
     _destroy: $.noop
