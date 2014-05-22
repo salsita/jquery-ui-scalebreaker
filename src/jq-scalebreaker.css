@@ -15,8 +15,8 @@
   z-index: 1;
   width: 100%;
   cursor: auto;
-  transition: all .2s ease-in-out;
-  -webkit-transition: all .2s ease-in-out;
+  transition: all .1s ease-in-out;
+  -webkit-transition: all .1s ease-in-out;
 }
 
 #jq-scalebreaker-dialog-scrollable {
@@ -34,7 +34,6 @@
   top: 0;
   cursor: pointer;
   z-index: 2;
-  -webkit-transform: translateZ(1px);
 }
 
 /* UI Logic */
