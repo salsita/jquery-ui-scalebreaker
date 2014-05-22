@@ -84,11 +84,6 @@
           return console.log("" + this.options.idNamespace + ": " + name, args);
         }
       },
-      refresh: function() {
-        this._getCurrentViewport();
-        this._rescaleAndReposition();
-        return this._manageScrollbar();
-      },
       show: function() {
         var _self;
         _self = this;
@@ -154,6 +149,11 @@
         this.content.html(content);
         this.refresh();
         return this._logMessage('adding content to dialog', content);
+      },
+      refresh: function() {
+        this._getCurrentViewport();
+        this._rescaleAndReposition();
+        return this._manageScrollbar();
       },
       destroy: function() {
         $(window).off("scroll." + this.options.idNamespace);

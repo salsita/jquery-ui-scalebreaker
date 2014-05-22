@@ -104,11 +104,6 @@
       if @options.debug
         console.log "#{@options.idNamespace}: #{name}", args
 
-    refresh: ->
-      @_getCurrentViewport()
-      @_rescaleAndReposition()
-      @_manageScrollbar()
-
     show: ->
       _self = this
       # Close binds.
@@ -171,6 +166,11 @@
       @content.html content
       @refresh()
       @_logMessage 'adding content to dialog', content
+
+    refresh: ->
+      @_getCurrentViewport()
+      @_rescaleAndReposition()
+      @_manageScrollbar()
 
     destroy: ->
       $(window).off "scroll.#{@options.idNamespace}"
