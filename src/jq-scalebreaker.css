@@ -15,6 +15,8 @@
   z-index: 1;
   width: 100%;
   cursor: auto;
+  transition: all .2s ease-in-out;
+  -webkit-transition: all .2s ease-in-out;
 }
 
 #jq-scalebreaker-dialog-scrollable {

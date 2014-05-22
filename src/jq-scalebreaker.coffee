@@ -40,7 +40,6 @@
       # Dynamic data based on actual user values.
       @scaleFactor = null
       @currentViewportOffset = null
-
       @_initWidget()
 
     _initWidget: ->
