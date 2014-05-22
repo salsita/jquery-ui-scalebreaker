@@ -2,13 +2,10 @@
   $.widget "salsita.scalebreaker",
 
     # TODO:
-    # refresh method, onresize it breaks (default bind to refresh)
     # fix non-mobile websites scaling back to a tiny dialog (correct but wrong)
     # fix the physical scrollbar size counted in innerWidth
-    # deny double tap in iOS
     # add scale to center
-    # add common close
-    # make scrollable
+    # make instanceable html?
 
     options:
       cssAnimated: true
