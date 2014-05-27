@@ -23,6 +23,9 @@
         this.fullPageHeight = null;
         this.scaleFactor = null;
         this.currentViewportOffset = null;
+        this.mobileFriendlyMaxWidth = 568;
+        this.mobileFriendlyInitialWidth = 320;
+        this.isMobileBrowser = /iPhone|iPod|Android|BlackBerry/.test(navigator.userAgent);
         return this._initWidget();
       },
       _initWidget: function() {
@@ -55,11 +58,22 @@
         });
       },
       _rescaleAndReposition: function() {
-        this.dialog.css({
-          'left': this.currentViewportOffset[0],
-          'transform': "scale(" + this.scaleFactor + ")",
-          '-webkit-transform': "scale(" + this.scaleFactor + ")"
-        });
+        var mobileFriendlyScaleFactor;
+        if (this.isMobileBrowser && (document.documentElement.clientWidth > this.mobileFriendlyMaxWidth)) {
+          mobileFriendlyScaleFactor = document.documentElement.clientWidth / this.mobileFriendlyInitialWidth;
+          this.dialog.css({
+            'width': this.options.mobileFriendlyInitialWidth,
+            'left': this.currentViewportOffset[0],
+            'transform': "scale(" + (this.scaleFactor * mobileFriendlyScaleFactor) + ")",
+            '-webkit-transform': "scale(" + (this.scaleFactor * mobileFriendlyScaleFactor) + ")"
+          });
+        } else {
+          this.dialog.css({
+            'left': this.currentViewportOffset[0],
+            'transform': "scale(" + this.scaleFactor + ")",
+            '-webkit-transform': "scale(" + this.scaleFactor + ")"
+          });
+        }
         if (this.options.dialogPosition === 'top') {
           this.dialog.css({
             'top': this.currentViewportOffset[1],

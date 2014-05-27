@@ -4,6 +4,7 @@
     # TODO:
     # fix non-mobile websites scaling back to a tiny dialog (correct but wrong)
     # add scale to center
+    # refresh for orientation change
     # make instanceable html?
 
     options:
@@ -38,6 +39,10 @@
       @fullPageHeight = null
       @scaleFactor = null
       @currentViewportOffset = null
+      # Settings for mobile unfriendly websites (that load in it's full "desktop" viewport).
+      @mobileFriendlyMaxWidth = 568
+      @mobileFriendlyInitialWidth = 320
+      @isMobileBrowser = (/iPhone|iPod|Android|BlackBerry/).test(navigator.userAgent)
       @_initWidget()
 
     _initWidget: ->
@@ -77,10 +82,19 @@
         'overflow': bodyOverflow
 
     _rescaleAndReposition: ->
-      @dialog.css
-        'left': @currentViewportOffset[0]
-        'transform': "scale(#{@.scaleFactor})"
-        '-webkit-transform': "scale(#{@.scaleFactor})"
+      # Detect if the website is not mobile friendly and apply different scaling.
+      if @isMobileBrowser and (document.documentElement.clientWidth > @mobileFriendlyMaxWidth)
+        mobileFriendlyScaleFactor = document.documentElement.clientWidth / @mobileFriendlyInitialWidth
+        @dialog.css
+          'width': @options.mobileFriendlyInitialWidth
+          'left': @currentViewportOffset[0]
+          'transform': "scale(#{@scaleFactor * mobileFriendlyScaleFactor})"
+          '-webkit-transform': "scale(#{@scaleFactor * mobileFriendlyScaleFactor})"
+      else
+        @dialog.css
+          'left': @currentViewportOffset[0]
+          'transform': "scale(#{@scaleFactor})"
+          '-webkit-transform': "scale(#{@scaleFactor})"
       if @options.dialogPosition is 'top'
         @dialog.css
           'top': @currentViewportOffset[1]
@@ -116,7 +130,8 @@
       @close.on "click.#{@options.idNamespace}", (e) ->
         _self.hide()
       # Deny user touch scrolling while widget is visible.
-      # This solves a lot of proxy UX problems, visual browser prolapses and code complexity for the moment.
+      # This solves a lot of proxy UX problems, visual browser glitches (Android stock) and code complexity for the moment.
+      # Due to native browser features this may not be enough to prevent all scrolling.
       if @options.denyUserScroll
         $('body').on "touchmove.#{@options.idNamespace}", (e) ->
           e.preventDefault()
@@ -173,6 +188,8 @@
       # Sets height of the backdrop, important step prone to potential issues.
       # Position fixed cannot be used due to iPhone post-process moving elements relative to page edge during user scaling.
       @_setFullPageHeight()
+
+
       @_getCurrentViewport()
       @_rescaleAndReposition()
       @_manageScrollbar()
