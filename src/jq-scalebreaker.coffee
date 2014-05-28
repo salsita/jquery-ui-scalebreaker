@@ -2,10 +2,9 @@
   $.widget "salsita.scalebreaker",
 
     # TODO:
-    # fix non-mobile websites scaling back to a tiny dialog (correct but wrong)
     # add scale to center
     # refresh for orientation change
-    # make instanceable html?
+    # make instanceable html? no ids?
 
     options:
       cssAnimated: true
@@ -198,6 +197,9 @@
       @content.html content
       @refresh()
       @_logMessage 'adding content to dialog', content
+
+    getContentElement: ->
+      return @content
 
     refresh: ->
       # Sets height of the backdrop, important step prone to potential issues.

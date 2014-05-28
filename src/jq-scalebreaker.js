@@ -185,6 +185,9 @@
         this.refresh();
         return this._logMessage('adding content to dialog', content);
       },
+      getContentElement: function() {
+        return this.content;
+      },
       refresh: function() {
         this._setWrapperDimensions();
         this._getCurrentViewport();
