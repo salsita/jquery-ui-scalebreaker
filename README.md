@@ -38,3 +38,4 @@ A demo currently lives [here](http://mystrd.at/testing/jq-scalebreaker/demo/). G
 `getContentElement` - Return a jQuery reference to the content holding element.  
 `getDialogState` - Returns a string with the dialog state, currently either `hidden` or `shown`.  
 `refresh` - Recalculates the page sizes/offsets, repositions the widget on screen, manages scrollbar updates.  
+`destroy` - Murders the instance.
