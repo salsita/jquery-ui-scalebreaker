@@ -11,7 +11,8 @@ A demo currently lives [here](http://mystrd.at/testing/jq-scalebreaker/demo/). G
 *Example*  
 `$('body').scalebreaker({  
   dialogPosition: 'bottom',  
-  denyUserScroll: true  
+  denyUserScroll: true,  
+  dialogContent : "<foo>foo right here</foo>"
 });`
 
 `cssAnimated` - Uses CSS keyframe animations for the entrée/departure. Default `true`.  
