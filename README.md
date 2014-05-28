@@ -23,7 +23,8 @@ A demo currently lives [here](http://mystrd.at/testing/jq-scalebreaker/demo/). G
 `refreshOnScroll` - Refreshed the dialog position when scroll event is fired. Default `true`.  
 `mobileFriendlyMaxWidth` - Maximum initial viewport width that identifies a device friendly website. Default `568`.  
 `mobileFriendlyInitialWidth` - The device-width emulation for dialog content. Default `320`.  
-`debug` - Prints some info about it's internals into browser console. Default `false`.
+`broadcastEvents` - Triggers events on the body element for dialog states - `dialogShown.jq-scalebreaker` `dialogHidden.jq-scalebreaker`. Default `true`.  
+`debug` - Prints some info about it's internals into browser console. Default `false`
 
 
 ## Public methods
