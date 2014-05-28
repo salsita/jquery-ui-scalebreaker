@@ -44,6 +44,7 @@
       @isMobileBrowser = (/iPhone|iPod|Android|BlackBerry/).test(navigator.userAgent)
       @state = 'hidden'
       @_initWidget()
+      @_logMessage 'widget created', @wrapper
 
     _initWidget: ->
       # Append the basic wrapper to the DOM.
@@ -238,6 +239,6 @@
       if @scrollbar
         @scrollbar.destroy()
       @scrollbar = null
-      @_logMessage 'destroying instance'
+      @_logMessage 'widget instance destroyed'
 
 ) jQuery

@@ -28,7 +28,8 @@
         this.currentViewportOffset = null;
         this.isMobileBrowser = /iPhone|iPod|Android|BlackBerry/.test(navigator.userAgent);
         this.state = 'hidden';
-        return this._initWidget();
+        this._initWidget();
+        return this._logMessage('widget created', this.wrapper);
       },
       _initWidget: function() {
         $('body').append(this.rawElement);
@@ -226,7 +227,7 @@
           this.scrollbar.destroy();
         }
         this.scrollbar = null;
-        return this._logMessage('destroying instance');
+        return this._logMessage('widget instance destroyed');
       }
     });
   })(jQuery);
