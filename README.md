@@ -11,7 +11,8 @@ A demo currently lives [here](http://mystrd.at/testing/jq-scalebreaker/demo/). G
 *Example*  
 `$('body').scalebreaker({  
   dialogPosition: 'bottom',  
-  denyUserScroll: true  
+  denyUserScroll: true,  
+  dialogContent : "<foo>foo right here</foo>"
 });`
 
 `cssAnimated` - Uses CSS keyframe animations for the entrée/departure. Default `true`.  
@@ -34,4 +35,5 @@ A demo currently lives [here](http://mystrd.at/testing/jq-scalebreaker/demo/). G
 `hide` - Hides the dialog.  
 `changeDialogContent` - Replaces HTML in the dialog from the param and calls refresh.  
 `getContentElement` - Return a jQuery reference to the content holding element.  
+`getDialogState` - Returns a string with the dialog state, currently either `hidden` or `shown`.  
 `refresh` - Recalculates the page sizes/offsets, repositions the widget on screen, manages scrollbar updates.  
