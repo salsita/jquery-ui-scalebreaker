@@ -16,6 +16,8 @@
       closeOnBackdrop: true
       denyUserScroll: true
       refreshOnScroll: true
+      mobileFriendlyInitialWidth: 320
+      mobileFriendlyMaxWidth: 568
       debug: false
 
     _create: ->
@@ -36,12 +38,9 @@
       @content = null
       @close = null
       # Dynamic data based on actual user values.
-      @fullPageHeight = null
+      @fullPageDimensions = {}
       @scaleFactor = null
       @currentViewportOffset = null
-      # Settings for mobile unfriendly websites (that load in it's full "desktop" viewport).
-      @mobileFriendlyMaxWidth = 568
-      @mobileFriendlyInitialWidth = 320
       @isMobileBrowser = (/iPhone|iPod|Android|BlackBerry/).test(navigator.userAgent)
       @_initWidget()
 
@@ -58,33 +57,48 @@
       # The widget stays in the DOM so any 3rd party manipulation of it's content is A-okay at any time.
       @changeDialogContent @options.dialogContent
 
-    _setFullPageHeight: ->
-      @fullPageHeight = Math.max(document.body.offsetHeight,
-        document.documentElement.clientHeight,
-        document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight)
-      # Apply to wrapper.
-      @wrapper.css
-        'height': @fullPageHeight
-
-    _getCurrentViewport: ->
-      bodyOverflow = $('body').css 'overflow'
+    _setWrapperDimensions: ->
+      # Save any existing inline styles on body.
+      bodyInlineStyle = $('body').attr 'style'
       # Hide the scrollbars so the calculations don't fail.
       $('body').css
         'overflow': 'hidden'
-      @scaleFactor = window.innerWidth/document.documentElement.clientWidth
+      @fullPageDimensions.Width = Math.max(document.body.offsetWidth,
+        document.documentElement.clientWidth,
+        document.documentElement.scrollWidth,
+        document.documentElement.offsetWidth)
+      @fullPageDimensions.Height = Math.max(document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight)
+      # Not setting max width in a browser with physical scrollbars makes it desktop compatible.
+      if @isMobileBrowser
+        @wrapper.css
+          'width': @fullPageDimensions.Width
+          'height': @fullPageDimensions.Height
+      else
+        @wrapper.css
+          'height': @fullPageDimensions.Height
+      # Revert back to the original page value.
+      if bodyInlineStyle
+        $('body').attr 'style', bodyInlineStyle
+      else
+        $('body').removeAttr 'style'
+
+    _getCurrentViewport: ->
+      @scaleFactor = window.innerWidth/@fullPageDimensions.Width
       @_logMessage 'scale factor', @scaleFactor
       # This may be too iPhony (though nice), needs testing across browsers and devices.
       @currentViewportOffset = [window.pageXOffset, window.pageYOffset]
       @_logMessage 'current viewport offset', @currentViewportOffset
-      # Revert back to the original page value.
-      $('body').css
-        'overflow': bodyOverflow
 
     _rescaleAndReposition: ->
-      # Detect if the website is not mobile friendly and apply different scaling.
-      if @isMobileBrowser and (document.documentElement.clientWidth > @mobileFriendlyMaxWidth)
-        mobileFriendlyScaleFactor = document.documentElement.clientWidth / @mobileFriendlyInitialWidth
+      # Detect if the website is mobile friendly and apply custom styles.
+      if !@isMobileBrowser
+        @dialog.css
+          'left': @currentViewportOffset[0]
+      else if @isMobileBrowser and (@fullPageDimensions.Width > @options.mobileFriendlyMaxWidth)
+        mobileFriendlyScaleFactor = @fullPageDimensions.Width / @options.mobileFriendlyInitialWidth
         @dialog.css
           'width': @options.mobileFriendlyInitialWidth
           'left': @currentViewportOffset[0]
@@ -95,6 +109,7 @@
           'left': @currentViewportOffset[0]
           'transform': "scale(#{@scaleFactor})"
           '-webkit-transform': "scale(#{@scaleFactor})"
+      # Positioning to the viewport, should include more and smarter positions (soon!).
       if @options.dialogPosition is 'top'
         @dialog.css
           'top': @currentViewportOffset[1]
@@ -102,7 +117,7 @@
           '-webkit-transform-origin': '0 0'
       if @options.dialogPosition is 'bottom'
         @dialog.css
-          'bottom': @fullPageHeight - (@currentViewportOffset[1] + window.innerHeight)
+          'bottom': @fullPageDimensions.Height - (@currentViewportOffset[1] + window.innerHeight)
           'transform-origin': '0 100%'
           '-webkit-transform-origin': '0 100%'
 
@@ -187,9 +202,7 @@
     refresh: ->
       # Sets height of the backdrop, important step prone to potential issues.
       # Position fixed cannot be used due to iPhone post-process moving elements relative to page edge during user scaling.
-      @_setFullPageHeight()
-
-
+      @_setWrapperDimensions()
       @_getCurrentViewport()
       @_rescaleAndReposition()
       @_manageScrollbar()
@@ -205,7 +218,7 @@
       @content = null
       @close = null
       @scaleFactor = null
-      @fullPageHeight = null
+      @fullPageDimensions = null
       @currentViewportOffset = null
       if @scrollbar
         @scrollbar.destroy()
