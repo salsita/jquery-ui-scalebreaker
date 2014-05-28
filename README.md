@@ -32,8 +32,8 @@ A demo currently lives [here](http://mystrd.at/testing/jq-scalebreaker/demo/). G
 `$('body').scalebreaker('show');`  
 `$('body').scalebreaker('changeDialogContent', "<p>Hello world!</p>");`
 
-`show` - Brings the dialog in.  
-`hide` - Hides the dialog.  
+`show` - [Brings the widget in](https://www.youtube.com/watch?v=hkzl0zHIE2k).  
+`hide` - Hides the widget.  
 `changeDialogContent` - Replaces HTML in the dialog from the param and calls refresh.  
 `getContentElement` - Return a jQuery reference to the content holding element.  
 `getDialogState` - Returns a string with the dialog state, currently either `hidden` or `shown`.  
