@@ -28,7 +28,6 @@
         this.currentViewportOffset = null;
         this.isMobileBrowser = /iPhone|iPod|Android|BlackBerry/.test(navigator.userAgent);
         this.state = 'hidden';
-        console.log("create called");
         return this._initWidget();
       },
       _initWidget: function() {

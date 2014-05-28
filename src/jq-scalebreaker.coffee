@@ -43,7 +43,6 @@
       @currentViewportOffset = null
       @isMobileBrowser = (/iPhone|iPod|Android|BlackBerry/).test(navigator.userAgent)
       @state = 'hidden'
-      console.log "create called"
       @_initWidget()
 
     _initWidget: ->
