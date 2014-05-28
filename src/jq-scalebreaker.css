@@ -28,6 +28,16 @@
   -webkit-box-sizing: border-box;
 }
 
+#jq-scalebreaker-dialog-content:before,
+#jq-scalebreaker-dialog-content:after {
+  content: "";
+  display: table;
+}
+
+#jq-scalebreaker-dialog-content:after {
+  clear: both;
+}
+
 #jq-scalebreaker-dialog-close {
   position: absolute;
   right: 0;
