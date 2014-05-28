@@ -28,6 +28,7 @@
         this.currentViewportOffset = null;
         this.isMobileBrowser = /iPhone|iPod|Android|BlackBerry/.test(navigator.userAgent);
         this.state = 'hidden';
+        console.log("create called");
         return this._initWidget();
       },
       _initWidget: function() {
@@ -210,7 +211,7 @@
         this._manageScrollbar();
         return this._logMessage('refreshing');
       },
-      destroy: function() {
+      _destroy: function() {
         $(window).off("scroll." + this.options.idNamespace);
         this.wrapper.remove();
         this.rawElement = null;
@@ -226,9 +227,8 @@
           this.scrollbar.destroy();
         }
         this.scrollbar = null;
-        return this._destroy();
-      },
-      _destroy: $.noop
+        return this._logMessage('destroying instance');
+      }
     });
   })(jQuery);
 

@@ -43,6 +43,7 @@
       @currentViewportOffset = null
       @isMobileBrowser = (/iPhone|iPod|Android|BlackBerry/).test(navigator.userAgent)
       @state = 'hidden'
+      console.log "create called"
       @_initWidget()
 
     _initWidget: ->
@@ -223,7 +224,7 @@
       @_manageScrollbar()
       @_logMessage 'refreshing'
 
-    destroy: ->
+    _destroy: ->
       $(window).off "scroll.#{@options.idNamespace}"
       @wrapper.remove()
       @rawElement = null
@@ -238,8 +239,6 @@
       if @scrollbar
         @scrollbar.destroy()
       @scrollbar = null
-      @_destroy()
-
-    _destroy: $.noop
+      @_logMessage 'destroying instance'
 
 ) jQuery
