@@ -8,6 +8,11 @@
 A demo currently lives [here](http://mystrd.at/testing/jq-scalebreaker/demo/). Go mobile and pinch it.
 
 ## Options
+*Examples*  
+`$('body').scalebreaker({  
+  dialogPosition: 'bottom',  
+  denyUserScroll: true  
+});`
 
 `cssAnimated` - Uses CSS keyframe animations for the entrée/departure. Default `true`.  
 `dialogContent` - Initial HTML content to use for the dialog.  
@@ -21,6 +26,9 @@ A demo currently lives [here](http://mystrd.at/testing/jq-scalebreaker/demo/). G
 
 
 ## Public methods
+*Examples*  
+`$('body').scalebreaker('show');`  
+`$('body').scalebreaker('changeDialogContent', "<p>Hello world!</p>");`
 
 `show` - Brings the dialog in.  
 `hide` - Hides the dialog.  
