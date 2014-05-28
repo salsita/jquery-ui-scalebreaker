@@ -26,6 +26,7 @@
         this.scaleFactor = null;
         this.currentViewportOffset = null;
         this.isMobileBrowser = /iPhone|iPod|Android|BlackBerry/.test(navigator.userAgent);
+        this.state = 'hidden';
         return this._initWidget();
       },
       _initWidget: function() {
@@ -153,6 +154,7 @@
             return _self.refresh();
           });
         }
+        this.state = 'shown';
         return this._logMessage('showing widget');
       },
       hide: function() {
@@ -178,6 +180,7 @@
         if (this.options.refreshOnScroll) {
           $(window).off("scroll." + this.options.idNamespace);
         }
+        this.state = 'hidden';
         return this._logMessage('hiding widget');
       },
       changeDialogContent: function(content) {
@@ -187,6 +190,9 @@
       },
       getContentElement: function() {
         return this.content;
+      },
+      getDialogState: function() {
+        return this.state;
       },
       refresh: function() {
         this._setWrapperDimensions();

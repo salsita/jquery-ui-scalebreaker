@@ -41,6 +41,7 @@
       @scaleFactor = null
       @currentViewportOffset = null
       @isMobileBrowser = (/iPhone|iPod|Android|BlackBerry/).test(navigator.userAgent)
+      @state = 'hidden'
       @_initWidget()
 
     _initWidget: ->
@@ -164,6 +165,7 @@
       if @options.refreshOnScroll
         $(window).on "scroll.#{@options.idNamespace}",(e) ->
           _self.refresh()
+      @state = 'shown'
       @_logMessage 'showing widget'
 
     hide: ->
@@ -191,6 +193,7 @@
       # Remove the scroll event bind.
       if @options.refreshOnScroll
         $(window).off "scroll.#{@options.idNamespace}"
+      @state = 'hidden'
       @_logMessage 'hiding widget'
 
     changeDialogContent: (content) ->
@@ -200,6 +203,9 @@
 
     getContentElement: ->
       return @content
+
+    getDialogState: ->
+      return @state
 
     refresh: ->
       # Sets height of the backdrop, important step prone to potential issues.
