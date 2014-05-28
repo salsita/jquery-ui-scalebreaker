@@ -12,6 +12,7 @@
         refreshOnScroll: true,
         mobileFriendlyInitialWidth: 320,
         mobileFriendlyMaxWidth: 568,
+        broadcastEvents: true,
         debug: false
       },
       _create: function() {
@@ -115,9 +116,13 @@
           return this.scrollbar.refresh();
         }
       },
+      _triggerEvent: function(name, data) {
+        this.element.trigger(name, [data]);
+        return this._logMessage(name, data);
+      },
       _logMessage: function(name, args) {
         if (this.options.debug) {
-          return console.log("" + this.options.idNamespace + ": " + name, args);
+          return console.log("jq-scalebreaker: " + name, args);
         }
       },
       show: function() {
@@ -155,7 +160,9 @@
           });
         }
         this.state = 'shown';
-        return this._logMessage('showing widget');
+        if (this.options.broadcastEvents) {
+          return this._triggerEvent("dialogShown." + this.options.idNamespace, this.wrapper);
+        }
       },
       hide: function() {
         var _self;
@@ -181,7 +188,9 @@
           $(window).off("scroll." + this.options.idNamespace);
         }
         this.state = 'hidden';
-        return this._logMessage('hiding widget');
+        if (this.options.broadcastEvents) {
+          return this._triggerEvent("dialogHidden." + this.options.idNamespace, this.wrapper);
+        }
       },
       changeDialogContent: function(content) {
         this.content.html(content);
