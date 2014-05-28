@@ -33,5 +33,5 @@ A demo currently lives [here](http://mystrd.at/testing/jq-scalebreaker/demo/). G
 `show` - Brings the dialog in.  
 `hide` - Hides the dialog.  
 `changeDialogContent` - Replaces HTML in the dialog from the param and calls refresh.  
-`getContentElement` - Return a jQuery reference to the content holding element.
+`getContentElement` - Return a jQuery reference to the content holding element.  
 `refresh` - Recalculates the page sizes/offsets, repositions the widget on screen, manages scrollbar updates.  
