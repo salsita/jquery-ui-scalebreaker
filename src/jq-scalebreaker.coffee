@@ -65,22 +65,22 @@
       # Hide the scrollbars so the calculations don't fail.
       $('body').css
         'overflow': 'hidden'
-      @fullPageDimensions.Width = Math.max(document.body.offsetWidth,
+      @fullPageDimensions.width = Math.max(document.body.offsetWidth,
         document.documentElement.clientWidth,
         document.documentElement.scrollWidth,
         document.documentElement.offsetWidth)
-      @fullPageDimensions.Height = Math.max(document.body.offsetHeight,
+      @fullPageDimensions.height = Math.max(document.body.offsetHeight,
         document.documentElement.clientHeight,
         document.documentElement.scrollHeight,
         document.documentElement.offsetHeight)
       # Not setting max width in a browser with physical scrollbars makes it desktop compatible.
       if @isMobileBrowser
         @wrapper.css
-          'width': @fullPageDimensions.Width
-          'height': @fullPageDimensions.Height
+          'width': @fullPageDimensions.width
+          'height': @fullPageDimensions.height
       else
         @wrapper.css
-          'height': @fullPageDimensions.Height
+          'height': @fullPageDimensions.height
       # Revert back to the original page value.
       if bodyInlineStyle
         $('body').attr 'style', bodyInlineStyle
@@ -88,7 +88,7 @@
         $('body').removeAttr 'style'
 
     _getCurrentViewport: ->
-      @scaleFactor = window.innerWidth/@fullPageDimensions.Width
+      @scaleFactor = window.innerWidth/@fullPageDimensions.width
       @_logMessage 'scale factor', @scaleFactor
       # This may be too iPhony (though nice), needs testing across browsers and devices.
       @currentViewportOffset = [window.pageXOffset, window.pageYOffset]
@@ -99,8 +99,8 @@
       if !@isMobileBrowser
         @dialog.css
           'left': @currentViewportOffset[0]
-      else if @isMobileBrowser and (@fullPageDimensions.Width > @options.mobileFriendlyMaxWidth)
-        mobileFriendlyScaleFactor = @fullPageDimensions.Width / @options.mobileFriendlyInitialWidth
+      else if @isMobileBrowser and (@fullPageDimensions.width > @options.mobileFriendlyMaxWidth)
+        mobileFriendlyScaleFactor = @fullPageDimensions.width / @options.mobileFriendlyInitialWidth
         @dialog.css
           'width': @options.mobileFriendlyInitialWidth
           'left': @currentViewportOffset[0]
@@ -119,7 +119,7 @@
           '-webkit-transform-origin': '0 0'
       if @options.dialogPosition is 'bottom'
         @dialog.css
-          'bottom': @fullPageDimensions.Height - (@currentViewportOffset[1] + window.innerHeight)
+          'bottom': @fullPageDimensions.height - (@currentViewportOffset[1] + window.innerHeight)
           'transform-origin': '0 100%'
           '-webkit-transform-origin': '0 100%'
 

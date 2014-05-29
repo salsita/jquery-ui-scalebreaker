@@ -46,16 +46,16 @@
         $('body').css({
           'overflow': 'hidden'
         });
-        this.fullPageDimensions.Width = Math.max(document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth);
-        this.fullPageDimensions.Height = Math.max(document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
+        this.fullPageDimensions.width = Math.max(document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth);
+        this.fullPageDimensions.height = Math.max(document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
         if (this.isMobileBrowser) {
           this.wrapper.css({
-            'width': this.fullPageDimensions.Width,
-            'height': this.fullPageDimensions.Height
+            'width': this.fullPageDimensions.width,
+            'height': this.fullPageDimensions.height
           });
         } else {
           this.wrapper.css({
-            'height': this.fullPageDimensions.Height
+            'height': this.fullPageDimensions.height
           });
         }
         if (bodyInlineStyle) {
@@ -65,7 +65,7 @@
         }
       },
       _getCurrentViewport: function() {
-        this.scaleFactor = window.innerWidth / this.fullPageDimensions.Width;
+        this.scaleFactor = window.innerWidth / this.fullPageDimensions.width;
         this._logMessage('scale factor', this.scaleFactor);
         this.currentViewportOffset = [window.pageXOffset, window.pageYOffset];
         return this._logMessage('current viewport offset', this.currentViewportOffset);
@@ -76,8 +76,8 @@
           this.dialog.css({
             'left': this.currentViewportOffset[0]
           });
-        } else if (this.isMobileBrowser && (this.fullPageDimensions.Width > this.options.mobileFriendlyMaxWidth)) {
-          mobileFriendlyScaleFactor = this.fullPageDimensions.Width / this.options.mobileFriendlyInitialWidth;
+        } else if (this.isMobileBrowser && (this.fullPageDimensions.width > this.options.mobileFriendlyMaxWidth)) {
+          mobileFriendlyScaleFactor = this.fullPageDimensions.width / this.options.mobileFriendlyInitialWidth;
           this.dialog.css({
             'width': this.options.mobileFriendlyInitialWidth,
             'left': this.currentViewportOffset[0],
@@ -100,7 +100,7 @@
         }
         if (this.options.dialogPosition === 'bottom') {
           return this.dialog.css({
-            'bottom': this.fullPageDimensions.Height - (this.currentViewportOffset[1] + window.innerHeight),
+            'bottom': this.fullPageDimensions.height - (this.currentViewportOffset[1] + window.innerHeight),
             'transform-origin': '0 100%',
             '-webkit-transform-origin': '0 100%'
           });
