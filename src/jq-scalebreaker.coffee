@@ -167,13 +167,18 @@
           if e.target is _self.scrollarea.get(0)
             _self.wrapper.removeClass "#{_self.options.idNamespace}-animate-in"
             _self.wrapper.off 'animationend webkitAnimationEnd'
+            @state = 'shown'
+            if @options.broadcastEvents
+              @_triggerEvent "dialogShown.#{@options.idNamespace}", @wrapper
+      else
+        @state = 'shown'
+        if @options.broadcastEvents
+          @_triggerEvent "dialogShown.#{@options.idNamespace}", @wrapper
       # Refresh the dialog on an unexpected scroll event.
       if @options.refreshOnScroll
         $(window).on "scroll.#{@options.idNamespace}",(e) ->
           _self.refresh()
-      @state = 'shown'
-      if @options.broadcastEvents
-        @_triggerEvent "dialogShown.#{@options.idNamespace}", @wrapper
+
 
     hide: ->
       _self = this
@@ -188,21 +193,20 @@
           if e.target is _self.scrollarea.get(0)
             _self.wrapper.removeClass "#{_self.options.idNamespace}-animate-out"
             _self.wrapper.removeClass "#{_self.options.idNamespace}-show"
-            # Remove inline CSS from the scaling.
-            # _self.dialog.removeAttr 'style'
             _self.wrapper.off 'animationend webkitAnimationEnd'
+            @state = 'hidden'
+            if @options.broadcastEvents
+              @_triggerEvent "dialogHidden.#{@options.idNamespace}", @wrapper
       # Or just close.
       else if @options.closeOnBackdrop
         _self.wrapper.off "click.#{@options.idNamespace}"
         @wrapper.removeClass "#{@options.idNamespace}-show"
-        # Remove inline CSS from the scaling.
-        # @dialog.removeAttr 'style'
+        @state = 'hidden'
+        if @options.broadcastEvents
+          @_triggerEvent "dialogHidden.#{@options.idNamespace}", @wrapper
       # Remove the scroll event bind.
       if @options.refreshOnScroll
         $(window).off "scroll.#{@options.idNamespace}"
-      @state = 'hidden'
-      if @options.broadcastEvents
-        @_triggerEvent "dialogHidden.#{@options.idNamespace}", @wrapper
 
     changeDialogContent: (content) ->
       @content.html content

@@ -151,18 +151,23 @@
           this.wrapper.on('animationend webkitAnimationEnd', function(e) {
             if (e.target === _self.scrollarea.get(0)) {
               _self.wrapper.removeClass("" + _self.options.idNamespace + "-animate-in");
-              return _self.wrapper.off('animationend webkitAnimationEnd');
+              _self.wrapper.off('animationend webkitAnimationEnd');
+              this.state = 'shown';
+              if (this.options.broadcastEvents) {
+                return this._triggerEvent("dialogShown." + this.options.idNamespace, this.wrapper);
+              }
             }
           });
+        } else {
+          this.state = 'shown';
+          if (this.options.broadcastEvents) {
+            this._triggerEvent("dialogShown." + this.options.idNamespace, this.wrapper);
+          }
         }
         if (this.options.refreshOnScroll) {
-          $(window).on("scroll." + this.options.idNamespace, function(e) {
+          return $(window).on("scroll." + this.options.idNamespace, function(e) {
             return _self.refresh();
           });
-        }
-        this.state = 'shown';
-        if (this.options.broadcastEvents) {
-          return this._triggerEvent("dialogShown." + this.options.idNamespace, this.wrapper);
         }
       },
       hide: function() {
@@ -178,19 +183,23 @@
             if (e.target === _self.scrollarea.get(0)) {
               _self.wrapper.removeClass("" + _self.options.idNamespace + "-animate-out");
               _self.wrapper.removeClass("" + _self.options.idNamespace + "-show");
-              return _self.wrapper.off('animationend webkitAnimationEnd');
+              _self.wrapper.off('animationend webkitAnimationEnd');
+              this.state = 'hidden';
+              if (this.options.broadcastEvents) {
+                return this._triggerEvent("dialogHidden." + this.options.idNamespace, this.wrapper);
+              }
             }
           });
         } else if (this.options.closeOnBackdrop) {
           _self.wrapper.off("click." + this.options.idNamespace);
           this.wrapper.removeClass("" + this.options.idNamespace + "-show");
+          this.state = 'hidden';
+          if (this.options.broadcastEvents) {
+            this._triggerEvent("dialogHidden." + this.options.idNamespace, this.wrapper);
+          }
         }
         if (this.options.refreshOnScroll) {
-          $(window).off("scroll." + this.options.idNamespace);
-        }
-        this.state = 'hidden';
-        if (this.options.broadcastEvents) {
-          return this._triggerEvent("dialogHidden." + this.options.idNamespace, this.wrapper);
+          return $(window).off("scroll." + this.options.idNamespace);
         }
       },
       changeDialogContent: function(content) {
