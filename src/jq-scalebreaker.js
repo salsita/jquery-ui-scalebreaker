@@ -8,6 +8,7 @@
         idNamespace: 'jq-scalebreaker',
         dialogPosition: 'bottom',
         closeOnBackdrop: true,
+        showCloseButton: true,
         denyUserScroll: true,
         refreshOnScroll: true,
         mobileFriendlyInitialWidth: 320,
@@ -16,7 +17,11 @@
         debug: false
       },
       _create: function() {
-        this.rawElement = "<div id='" + this.options.idNamespace + "-wrapper'> <div id='" + this.options.idNamespace + "-dialog-scalable'> <div id='" + this.options.idNamespace + "-dialog-scrollable'> <div id='" + this.options.idNamespace + "-dialog-content'></div> <span id='" + this.options.idNamespace + "-dialog-close'></span> </div> </div> </div>";
+        this.rawElement = "<div id='" + this.options.idNamespace + "-wrapper'> <div id='" + this.options.idNamespace + "-dialog-scalable'> <div id='" + this.options.idNamespace + "-dialog-scrollable'> <div id='" + this.options.idNamespace + "-dialog-content'></div>";
+        if (this.options.showCloseButton) {
+          this.rawElement += "      <span id='" + this.options.idNamespace + "-dialog-close'></span>";
+        }
+        this.rawElement += "    </div> </div> </div>";
         this.scrollbar = null;
         this.wrapper = null;
         this.dialog = null;
