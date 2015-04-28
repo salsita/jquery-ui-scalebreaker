@@ -41,7 +41,7 @@
       @fullPageDimensions = {}
       @scaleFactor = null
       @currentViewportOffset = null
-      @isMobileBrowser = (/iPhone|iPod|Android|BlackBerry/).test(navigator.userAgent)
+      @isMobileBrowser = (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent)
       @state = 'hidden'
       @_initWidget()
       @_logMessage 'widget created', @wrapper
