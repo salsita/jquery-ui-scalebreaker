@@ -21,6 +21,7 @@ A demo currently lives [here](http://mystrd.at/testing/jq-scalebreaker/demo/). G
 `closeOnBackdrop` - Closes the dialog when clicking the backdrop wrapper. Default `true`.  
 `denyUserScroll` - Try to disable scrolling while the dialog is shown. Default `true`.  
 `refreshOnScroll` - Refreshed the dialog position when scroll event is fired. Default `true`.  
+`showCloseButton` - Shows/hides the default close button. Default `true`.  
 `mobileFriendlyMaxWidth` - Maximum initial viewport width that identifies a device friendly website. Default `568`.  
 `mobileFriendlyInitialWidth` - Device-width viewport emulation for websites that are not mobile friendly. Default `320`.  
 `broadcastEvents` - Triggers events on the body element for dialog states - `dialogShown.jq-scalebreaker` `dialogHidden.jq-scalebreaker`. Default `true`.  
