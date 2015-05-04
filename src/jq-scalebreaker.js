@@ -247,5 +247,3 @@
   })(jQuery);
 
 }).call(this);
-
-//# sourceMappingURL=jq-scalebreaker.js.map
