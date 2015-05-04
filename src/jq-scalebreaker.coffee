@@ -13,6 +13,7 @@
       idNamespace: 'jq-scalebreaker'
       dialogPosition: 'bottom'
       closeOnBackdrop: true
+      showCloseButton: true
       denyUserScroll: true
       refreshOnScroll: true
       mobileFriendlyInitialWidth: 320
@@ -25,11 +26,15 @@
         "<div id='#{@options.idNamespace}-wrapper'>
           <div id='#{@options.idNamespace}-dialog-scalable'>
             <div id='#{@options.idNamespace}-dialog-scrollable'>
-              <div id='#{@options.idNamespace}-dialog-content'></div>
-              <span id='#{@options.idNamespace}-dialog-close'></span>
-            </div>
+              <div id='#{@options.idNamespace}-dialog-content'></div>"
+
+      if @options.showCloseButton
+        @rawElement += "      <span id='#{@options.idNamespace}-dialog-close'></span>"
+
+      @rawElement += "    </div>
           </div>
         </div>"
+      
       @scrollbar = null
       # DOM references
       @wrapper = null
@@ -41,7 +46,7 @@
       @fullPageDimensions = {}
       @scaleFactor = null
       @currentViewportOffset = null
-      @isMobileBrowser = (/iPhone|iPod|Android|BlackBerry/).test(navigator.userAgent)
+      @isMobileBrowser = (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent)
       @state = 'hidden'
       @_initWidget()
       @_logMessage 'widget created', @wrapper
