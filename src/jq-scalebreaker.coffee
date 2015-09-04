@@ -34,7 +34,7 @@
       @rawElement += "    </div>
           </div>
         </div>"
-      
+
       @scrollbar = null
       # DOM references
       @wrapper = null
@@ -172,9 +172,9 @@
           if e.target is _self.scrollarea.get(0)
             _self.wrapper.removeClass "#{_self.options.idNamespace}-animate-in"
             _self.wrapper.off 'animationend webkitAnimationEnd'
-            @state = 'shown'
-            if @options.broadcastEvents
-              @_triggerEvent "dialogShown.#{@options.idNamespace}", @wrapper
+            _self.state = 'shown'
+            if _self.options.broadcastEvents
+              _self._triggerEvent "dialogShown.#{_self.options.idNamespace}", _self.wrapper
       else
         @state = 'shown'
         if @options.broadcastEvents
@@ -199,9 +199,9 @@
             _self.wrapper.removeClass "#{_self.options.idNamespace}-animate-out"
             _self.wrapper.removeClass "#{_self.options.idNamespace}-show"
             _self.wrapper.off 'animationend webkitAnimationEnd'
-            @state = 'hidden'
-            if @options.broadcastEvents
-              @_triggerEvent "dialogHidden.#{@options.idNamespace}", @wrapper
+            _self.state = 'hidden'
+            if _self.options.broadcastEvents
+              _self._triggerEvent "dialogHidden.#{_self.options.idNamespace}", _self.wrapper
       # Or just close.
       else if @options.closeOnBackdrop
         _self.wrapper.off "click.#{@options.idNamespace}"
